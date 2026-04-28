@@ -1,0 +1,68 @@
+name: Build IPK Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up OpenWrt SDK
+        run: |
+          SDK_URL="https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-sdk-23.05.5-x86-64_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          curl -sL "$SDK_URL" -o sdk.tar.xz
+          tar xJf sdk.tar.xz
+          SDK_DIR=$(ls -d openwrt-sdk-* 2>/dev/null | head -1)
+          mkdir -p sdk
+          mv $SDK_DIR/* sdk/
+          # Fix feeds symlink
+          ln -sf ../tools/feeds/feeds sdk/scripts/feeds
+
+      - name: Copy package files
+        run: |
+          mkdir -p sdk/package/netguard
+          cp -r root/* sdk/package/netguard/
+
+      - name: Create minimal .config
+        run: |
+          cd sdk
+          cat > .config << 'EOF'
+          CONFIG_HAS_SHEBANG=y
+          CONFIG_HAVE_DOT_CONFIG=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_Generic=y
+          CONFIG_LUCI_CSFRF=y
+          CONFIG_LUCI_LANG_en=y
+          CONFIG_PACKAGE_netguard=y
+          EOF
+
+      - name: Build package
+        env:
+          TERMINFO: /usr/share/terminfo
+        run: |
+          cd sdk
+          make package/netguard/compile V=s
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: netguard-ipk
+          path: sdk/bin/packages/*/net/netguard*.ipk
+
+      - name: Build native binary (for testing)
+        run: |
+          cargo build --release --manifest-path=Cargo.toml
+          tar czf netguard-native.tar.gz target/release/netguard
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: netguard-native
+          path: netguard-native.tar.gz

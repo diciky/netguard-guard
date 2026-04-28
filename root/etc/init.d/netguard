@@ -1,0 +1,59 @@
+#!/bin/sh /etc/rc.common
+# NetGuard - Network Monitor Service
+
+START=95
+STOP=15
+USE_PROCD=0
+
+NETGUARD_BIN="/usr/bin/netguard"
+NETGUARD_CONF="/etc/config/netguard"
+PID_FILE="/var/run/netguard.pid"
+
+start() {
+    [ -f "$NETGUARD_BIN" ] || {
+        echo "netguard binary not found"
+        exit 1
+    }
+
+    # Check if enabled
+    enabled=$(uci get netguard.config.enabled 2>/dev/null || echo "1")
+    [ "$enabled" = "0" ] && {
+        echo "NetGuard is disabled"
+        exit 0
+    }
+
+    # Setup nftables
+    /usr/bin/netguard --setup
+
+    # Start daemon
+    mkdir -p /var/run
+    $NETGUARD_BIN &
+    echo $! > "$PID_FILE"
+    echo "NetGuard started (PID: $(cat $PID_FILE))"
+}
+
+stop() {
+    if [ -f "$PID_FILE" ]; then
+        kill $(cat "$PID_FILE") 2>/dev/null
+        rm -f "$PID_FILE"
+    fi
+}
+
+reload() {
+    # Restart to reload config
+    stop
+    start
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    reload) reload ;;
+    restart) restart ;;
+    *) echo "Usage: $0 {start|stop|reload|restart}" ;;
+esac

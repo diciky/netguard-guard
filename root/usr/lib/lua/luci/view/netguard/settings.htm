@@ -1,0 +1,93 @@
+<%+header%>
+<script type="text/javascript">
+    var activeTab = 'general';
+
+    function switchTab(tab) {
+        activeTab = tab;
+        document.querySelectorAll('.tab-content').forEach(function(el) {
+            el.style.display = 'none';
+        });
+        document.getElementById('tab_' + tab).style.display = 'block';
+        document.querySelectorAll('.tab-btn').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.getElementById('btn_' + tab).classList.add('active');
+    }
+
+    function saveSettings() {
+        var data = {
+            enabled: document.getElementById('enabled').checked,
+            refresh_interval: parseInt(document.getElementById('refresh_interval').value),
+            log_level: document.getElementById('log_level').value
+        };
+        XHR.post('<%=luci.dispatcher.build_url("admin/services/netguard/settings_save")%>', data,
+            function(response) {
+                alert('Settings saved');
+            });
+    }
+
+    window.onload = function() {
+        switchTab('general');
+    };
+</script>
+
+<div class="cbi-map">
+    <h2><%:NetGuard Settings%></h2>
+    <div class="cbi-section">
+        <div class="tabs">
+            <button id="btn_general" class="tab-btn active" onclick="switchTab('general')"><%:General%></button>
+            <button id="btn_api" class="tab-btn" onclick="switchTab('api')"><%:IP Info API%></button>
+            <button id="btn_connection" class="tab-btn" onclick="switchTab('connection')"><%:Connection%></button>
+            <button id="btn_backend" class="tab-btn" onclick="switchTab('backend')"><%:Backend%></button>
+        </div>
+
+        <div id="tab_general" class="tab-content">
+            <div class="cbi-row">
+                <label><%:Enable NetGuard%></label>
+                <input type="checkbox" id="enabled" checked>
+            </div>
+            <div class="cbi-row">
+                <label><%:Refresh Interval (seconds)%></label>
+                <input type="number" id="refresh_interval" value="3" min="1" max="60">
+            </div>
+            <div class="cbi-row">
+                <label><%:Log Level%></label>
+                <select id="log_level">
+                    <option value="debug">Debug</option>
+                    <option value="info" selected>Info</option>
+                    <option value="warn">Warning</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="tab_api" class="tab-content" style="display: none;">
+            <div class="cbi-row">
+                <label><%:GeoIP Provider%></label>
+                <select id="geoip_provider">
+                    <option value="maxmind">MaxMind GeoLite2</option>
+                    <option value="ip-api">ip-api.com</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="tab_connection" class="tab-content" style="display: none;">
+            <div class="cbi-row">
+                <label><%:Max Connections%></label>
+                <input type="number" id="max_connections" value="5000" min="100" max="50000">
+            </div>
+        </div>
+
+        <div id="tab_backend" class="tab-content" style="display: none;">
+            <div class="cbi-row">
+                <label><%:Database Path%></label>
+                <input type="text" id="db_path" value="/tmp/netguard.db" readonly>
+            </div>
+        </div>
+
+        <div class="cbi-row">
+            <button class="btn" onclick="saveSettings()"><%:Save Settings%></button>
+        </div>
+    </div>
+</div>
+<%+footer%>

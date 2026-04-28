@@ -1,0 +1,14 @@
+/Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/deps/serde-35707e26445d0ede.d: /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/build/serde-cf7515a1b9f3c589/out/private.rs
+
+/Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/deps/libserde-35707e26445d0ede.rlib: /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/build/serde-cf7515a1b9f3c589/out/private.rs
+
+/Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/deps/libserde-35707e26445d0ede.rmeta: /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/build/serde-cf7515a1b9f3c589/out/private.rs
+
+/Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/diciky/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/build/serde-cf7515a1b9f3c589/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/diciky/claude/claude-code-multi-agent/projects/netguard/target/release/build/serde-cf7515a1b9f3c589/out

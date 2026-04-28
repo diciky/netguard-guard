@@ -1,0 +1,63 @@
+<%+header%>
+<script type="text/javascript">
+    // Virtual scroll implementation for connection list
+    var connections = [];
+    var visibleConnections = [];
+    var scrollPosition = 0;
+    var itemHeight = 40;
+    var visibleItems = 20;
+
+    function loadConnections() {
+        XHR.get('<%=luci.dispatcher.build_url("admin/services/netguard/connections_data")%>', null,
+            function(data) {
+                connections = data.connections || [];
+                renderConnections();
+            });
+    }
+
+    function renderConnections() {
+        var container = document.getElementById('connections_container');
+        var totalHeight = connections.length * itemHeight;
+        container.style.height = totalHeight + 'px';
+
+        var startIndex = Math.floor(window.scrollY / itemHeight);
+        var endIndex = Math.min(startIndex + visibleItems + 5, connections.length);
+
+        container.innerHTML = '';
+        for (var i = startIndex; i < endIndex; i++) {
+            var conn = connections[i];
+            var div = document.createElement('div');
+            div.className = 'connection-row';
+            div.style.position = 'absolute';
+            div.style.top = (i * itemHeight) + 'px';
+            div.style.width = '100%';
+            div.innerHTML = '<span>' + conn.src_ip + '</span><span>' + conn.dst_ip + '</span><span>' + conn.app_name + '</span><span>' + formatBytes(conn.bytes) + '</span>';
+            container.appendChild(div);
+        }
+    }
+
+    function formatBytes(bytes) {
+        if (bytes > 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
+        if (bytes > 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
+        return (bytes / 1024).toFixed(2) + ' KB';
+    }
+
+    window.onscroll = renderConnections;
+    window.onload = loadConnections;
+    setInterval(loadConnections, 3000);
+</script>
+
+<div class="cbi-map">
+    <h2><%:Network Connections%></h2>
+    <div class="cbi-section">
+        <div class="connections-header">
+            <span>Source IP</span>
+            <span>Destination</span>
+            <span>APP</span>
+            <span>Traffic</span>
+        </div>
+        <div id="connections_container" style="position: relative; overflow-y: auto; height: 600px;">
+        </div>
+    </div>
+</div>
+<%+footer%>

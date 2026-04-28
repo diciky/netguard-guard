@@ -1,0 +1,32 @@
+#!/bin/sh
+# NetGuard CGI Bridge
+
+SOCKET="/var/run/netguard.sock"
+
+case "$1" in
+    dashboard)
+        echo 'Content-Type: application/json'
+        echo ''
+        echo $(cat /tmp/netguard_dashboard.json 2>/dev/null || echo '{}')
+        ;;
+    connections)
+        echo 'Content-Type: application/json'
+        echo ''
+        echo $(cat /tmp/netguard_connections.json 2>/dev/null || echo '{"connections":[]}')
+        ;;
+    history)
+        echo 'Content-Type: application/json'
+        echo ''
+        echo $(cat /tmp/netguard_history.json 2>/dev/null || echo '{"history":[]}')
+        ;;
+    stats)
+        echo 'Content-Type: application/json'
+        echo ''
+        echo $(cat /tmp/netguard_stats.json 2>/dev/null || echo '{}')
+        ;;
+    *)
+        echo 'Content-Type: application/json'
+        echo ''
+        echo '{"error": "unknown command"}'
+        ;;
+esac

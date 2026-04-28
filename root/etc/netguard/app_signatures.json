@@ -1,0 +1,121 @@
+[
+  {
+    "id": "xiaohongshu",
+    "name": "小红书",
+    "sni_patterns": [],
+    "dns_patterns": ["xhscdn.com", "xiaohongshu.com", "xhs.cn", "xhtagcdn.com", "sns-img.xhscdn.com"],
+    "app_signature": null
+  },
+  {
+    "id": "douyin",
+    "name": "抖音",
+    "sni_patterns": [],
+    "dns_patterns": ["douyin.com", "douyinvod.com", "bytedance.com", "byted-static.com", "tiktok.com"],
+    "app_signature": null
+  },
+  {
+    "id": "kuaishou",
+    "name": "快手",
+    "sni_patterns": [],
+    "dns_patterns": ["kuaishou.com", "ksyun.com", "ksinku.com", "gifshow.com"],
+    "app_signature": null
+  },
+  {
+    "id": "weixin",
+    "name": "微信",
+    "sni_patterns": [],
+    "dns_patterns": ["wechat.com", "weixin.qq.com", "weixin.com", "qq.com", "tencent.com"],
+    "app_signature": null
+  },
+  {
+    "id": "weibo",
+    "name": "微博",
+    "sni_patterns": [],
+    "dns_patterns": ["weibo.com", "sina.com", "sinajs.cn", "weibocdn.com", "t.cn"],
+    "app_signature": null
+  },
+  {
+    "id": "taobao",
+    "name": "淘宝",
+    "sni_patterns": [],
+    "dns_patterns": ["taobao.com", "tmall.com", "alibaba.com", "alicdn.com", "taobao.net"],
+    "app_signature": null
+  },
+  {
+    "id": "jingdong",
+    "name": "京东",
+    "sni_patterns": [],
+    "dns_patterns": ["jd.com", "jd100.com", "jcloudcs.com", "jdcloud.com"],
+    "app_signature": null
+  },
+  {
+    "id": "pinduoduo",
+    "name": "拼多多",
+    "sni_patterns": [],
+    "dns_patterns": ["pinduoduo.com", "pddpic.com", "yangkeduo.com"],
+    "app_signature": null
+  },
+  {
+    "id": "baidu",
+    "name": "百度",
+    "sni_patterns": [],
+    "dns_patterns": ["baidu.com", "baidubce.com", "bdstatic.com", "baiducontent.com"],
+    "app_signature": null
+  },
+  {
+    "id": "zhihu",
+    "name": "知乎",
+    "sni_patterns": [],
+    "dns_patterns": ["zhihu.com", "zhimg.com", "zhezh.com"],
+    "app_signature": null
+  },
+  {
+    "id": "bilibili",
+    "name": "哔哩哔哩",
+    "sni_patterns": [],
+    "dns_patterns": ["bilibili.com", "biligame.com", "biliapi.com", "biliyun.com"],
+    "app_signature": null
+  },
+  {
+    "id": "netease_music",
+    "name": "网易云音乐",
+    "sni_patterns": [],
+    "dns_patterns": ["music.163.com", "netease.com", "126.net", "163yun.com"],
+    "app_signature": null
+  },
+  {
+    "id": "honor_of_kings",
+    "name": "王者荣耀",
+    "sni_patterns": [],
+    "dns_patterns": ["tencent.com", "game.qq.com", "wuxia.qq.com"],
+    "app_signature": null
+  },
+  {
+    "id": "alipay",
+    "name": "支付宝",
+    "sni_patterns": [],
+    "dns_patterns": ["alipay.com", "alipay.cn", "alibaba.com", "aliyun.com"],
+    "app_signature": null
+  },
+  {
+    "id": "toutiao",
+    "name": "今日头条",
+    "sni_patterns": [],
+    "dns_patterns": ["toutiao.com", "snail.com", "ixigua.com", "bytedance.com"],
+    "app_signature": null
+  },
+  {
+    "id": "meituan",
+    "name": "美团",
+    "sni_patterns": [],
+    "dns_patterns": ["meituan.com", "dianping.com", "meituan.net"],
+    "app_signature": null
+  },
+  {
+    "id": "didi",
+    "name": "滴滴出行",
+    "sni_patterns": [],
+    "dns_patterns": ["didiglobal.com", "xiaojukeji.com", "didichuxing.com"],
+    "app_signature": null
+  }
+]

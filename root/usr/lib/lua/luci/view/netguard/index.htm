@@ -1,0 +1,69 @@
+<%+header%>
+<script type="text/javascript">
+    // Dashboard refresh every 3 seconds
+    function refreshDashboard() {
+        XHR.get('<%=luci.dispatcher.build_url("admin/services/netguard/dashboard_data")%>', null,
+            function(data) {
+                document.getElementById('total_connections').textContent = data.total_connections || 0;
+                document.getElementById('memory_usage').textContent = data.memory_usage || '0 MB';
+                document.getElementById('upload_speed').textContent = formatSpeed(data.upload_speed);
+                document.getElementById('download_speed').textContent = formatSpeed(data.download_speed);
+                document.getElementById('upload_total').textContent = formatBytes(data.upload_total);
+                document.getElementById('download_total').textContent = formatBytes(data.download_total);
+            });
+        setTimeout(refreshDashboard, 3000);
+    }
+
+    function formatSpeed(bytes) {
+        if (bytes > 1048576) return (bytes / 1048576).toFixed(2) + ' MB/s';
+        if (bytes > 1024) return (bytes / 1024).toFixed(2) + ' KB/s';
+        return bytes + ' B/s';
+    }
+
+    function formatBytes(bytes) {
+        if (bytes > 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
+        if (bytes > 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
+        if (bytes > 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return bytes + ' B';
+    }
+
+    window.onload = refreshDashboard;
+</script>
+
+<div class="cbi-map">
+    <h2><%:NetGuard - Network Monitor%></h2>
+
+    <div class="cbi-section">
+        <div class="grid-container">
+            <div class="card">
+                <div class="card-title">Total Connections</div>
+                <div class="card-value" id="total_connections">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Memory Usage</div>
+                <div class="card-value" id="memory_usage">0 MB</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Upload Speed</div>
+                <div class="card-value" id="upload_speed">0 B/s</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Download Speed</div>
+                <div class="card-value" id="download_speed">0 B/s</div>
+            </div>
+        </div>
+
+        <div class="grid-container" style="margin-top: 20px;">
+            <div class="card">
+                <div class="card-title">Total Upload</div>
+                <div class="card-value" id="upload_total">0 B</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Download</div>
+                <div class="card-value" id="download_total">0 B</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%+footer%>

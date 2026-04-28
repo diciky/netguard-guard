@@ -1,0 +1,13 @@
+config config 'config'
+    option enabled '1'
+    option refresh_interval '3'
+    option max_connections '5000'
+
+config module 'module_control'
+    option nflog_listener '1'
+    option app_identifier '1'
+    option history_aggregator '1'
+
+config logging 'logging'
+    option log_level 'info'
+    option log_to_file '0'

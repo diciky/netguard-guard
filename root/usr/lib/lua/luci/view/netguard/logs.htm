@@ -1,0 +1,71 @@
+<%+header%>
+<script type="text/javascript">
+    var currentPage = 1;
+    var pageSize = 50;
+    var totalLogs = 0;
+
+    function loadLogs() {
+        XHR.get('<%=luci.dispatcher.build_url("admin/services/netguard/history_data")%>&page=' + currentPage, null,
+            function(data) {
+                renderLogs(data.logs || []);
+                totalLogs = data.total || 0;
+                renderPagination();
+            });
+    }
+
+    function renderLogs(logs) {
+        var container = document.getElementById('logs_container');
+        container.innerHTML = '';
+
+        logs.forEach(function(log) {
+            var row = document.createElement('div');
+            row.className = 'log-row';
+            row.innerHTML = '<span>' + log.date + '</span><span>' + log.src_ip + '</span><span>' + log.app_name + '</span><span>' + formatDuration(log.duration) + '</span><span>' + formatBytes(log.bytes) + '</span>';
+            container.appendChild(row);
+        });
+    }
+
+    function renderPagination() {
+        var totalPages = Math.ceil(totalLogs / pageSize);
+        var pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (var i = 1; i <= totalPages; i++) {
+            var btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = i === currentPage ? 'active' : '';
+            btn.onclick = function() { currentPage = parseInt(this.textContent); loadLogs(); };
+            pagination.appendChild(btn);
+        }
+    }
+
+    function formatDuration(seconds) {
+        var h = Math.floor(seconds / 3600);
+        var m = Math.floor((seconds % 3600) / 60);
+        return h + 'h ' + m + 'm';
+    }
+
+    function formatBytes(bytes) {
+        if (bytes > 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
+        if (bytes > 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
+        return (bytes / 1024).toFixed(2) + ' KB';
+    }
+
+    window.onload = loadLogs;
+</script>
+
+<div class="cbi-map">
+    <h2><%:Access History%></h2>
+    <div class="cbi-section">
+        <div class="logs-header">
+            <span>Date</span>
+            <span>Source IP</span>
+            <span>APP</span>
+            <span>Duration</span>
+            <span>Traffic</span>
+        </div>
+        <div id="logs_container"></div>
+        <div id="pagination" class="pagination"></div>
+    </div>
+</div>
+<%+footer%>
