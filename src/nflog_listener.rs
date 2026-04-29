@@ -39,12 +39,10 @@ impl NflogListener {
 
         // Bind to NFLog group
         unsafe {
-            let addr = sockaddr_nl {
-                nl_family: AF_NETLINK as sa_family_t,
-                nl_pad: 0,
-                nl_pid: 0,
-                nl_groups: 1u32 << (group - 1),
-            };
+            let mut addr: sockaddr_nl = std::mem::zeroed();
+            addr.nl_family = AF_NETLINK as sa_family_t;
+            addr.nl_pid = 0;
+            addr.nl_groups = 1u32 << (group - 1);
             let addr_len = std::mem::size_of::<sockaddr_nl>() as socklen_t;
             if libc::bind(fd, &addr as *const _ as *const libc::sockaddr, addr_len) < 0 {
                 libc::close(fd);
