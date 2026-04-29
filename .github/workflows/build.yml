@@ -84,9 +84,8 @@ jobs:
           tar -czf control.tar.gz CONTROL
           # Create debian-binary
           echo "2.0" > debian-binary
-          # Create ipk
+          # Create ipk (ar creates it in parent directory)
           ar -r ../netguard_1.0.0-1_x86_64.ipk debian-binary control.tar.gz data.tar.gz
-          mv ../netguard_1.0.0-1_x86_64.ipk ../
 
       - name: Upload IPK artifact
         uses: actions/upload-artifact@v4
