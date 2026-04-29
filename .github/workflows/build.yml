@@ -14,53 +14,83 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up OpenWrt SDK
-        run: |
-          SDK_URL="https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-sdk-23.05.5-x86-64_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
-          curl -sL "$SDK_URL" -o sdk.tar.xz
-          tar xJf sdk.tar.xz
-          SDK_DIR=$(ls -d openwrt-sdk-* 2>/dev/null | head -1)
-          mkdir -p sdk
-          mv $SDK_DIR/* sdk/
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-musl
 
-          # Create feeds directory structure
-          mkdir -p sdk/tools/feeds
-          # Copy feeds from SDK's tools directory if it exists, otherwise create placeholder
-          if [ -d "sdk/tools/feeds" ]; then
-            ln -sf ../../tools/feeds sdk/scripts/feeds
-          else
-            touch sdk/tools/feeds/.placeholder
-            ln -sf ../../tools/feeds sdk/scripts/feeds
-          fi
-
-      - name: Copy package files
+      - name: Build native binary
         run: |
-          mkdir -p sdk/package/netguard
-          cp -r root/* sdk/package/netguard/
+          cargo build --release --target=x86_64-unknown-linux-musl
 
-      - name: Create minimal .config
+      - name: Create IPK package structure
         run: |
-          cd sdk
-          cat > .config << 'EOF'
-          CONFIG_HAS_SHEBANG=y
-          CONFIG_HAVE_DOT_CONFIG=y
-          CONFIG_TARGET_x86_64=y
-          CONFIG_TARGET_x86_64_Generic=y
-          CONFIG_LUCI_CSFRF=y
-          CONFIG_LUCI_LANG_en=y
-          CONFIG_PACKAGE_netguard=y
+          # Create IPK directory structure
+          mkdir -p ipk/CONTROL
+          mkdir -p ipk/usr/bin
+          mkdir -p ipk/etc/init.d
+          mkdir -p ipk/etc/config
+          mkdir -p ipk/usr/lib/lua/luci/controller
+          mkdir -p ipk/usr/lib/lua/luci/view/netguard
+          mkdir -p ipk/www/cgi-bin
+          mkdir -p ipk/etc/netguard
+
+          # Copy binary
+          cp target/x86_64-unknown-linux-musl/release/netguard ipk/usr/bin/
+
+          # Copy config files
+          cp root/etc/init.d/netguard ipk/etc/init.d/
+          cp root/etc/config/netguard ipk/etc/config/
+          cp root/etc/netguard/app_signatures.json ipk/etc/netguard/
+
+          # Copy LuCI files
+          cp root/usr/lib/lua/luci/controller/netguard.lua ipk/usr/lib/lua/luci/controller/
+          for f in root/usr/lib/lua/luci/view/netguard/*; do
+            cp "$f" "ipk/usr/lib/lua/luci/view/netguard/"
+          done
+
+          # Copy CGI
+          cp root/www/cgi-bin/netguard ipk/www/cgi-bin/
+
+          # Make executables
+          chmod +x ipk/usr/bin/netguard
+          chmod +x ipk/etc/init.d/netguard
+          chmod +x ipk/www/cgi-bin/netguard
+
+      - name: Create control file
+        run: |
+          cat > ipk/CONTROL/control << 'EOF'
+          Package: netguard
+          Version: 1.0.0-1
+          Section: net
+          Architecture: x86_64
+          Maintainer: NetGuard
+          Description: Network Monitor for OpenWrt
+           A network monitoring daemon with nftables/NFLog/SNI support.
           EOF
 
-      - name: Build package
-        env:
-          TERMINFO: /usr/share/terminfo
+      - name: Build IPK
         run: |
-          cd sdk
-          make package/netguard/compile V=s
+          cd ipk
+          # Create data.tar.gz
+          tar -czf data.tar.gz usr etc
+          # Create control.tar.gz
+          tar -czf control.tar.gz CONTROL
+          # Create debian-binary
+          echo "2.0" > debian-binary
+          # Create ipk
+          ar -r ../netguard_1.0.0-1_x86_64.ipk debian-binary control.tar.gz data.tar.gz
+          mv ../netguard_1.0.0-1_x86_64.ipk ../
 
-      - name: Upload artifact
-        if: always()
+      - name: Upload IPK artifact
         uses: actions/upload-artifact@v4
         with:
           name: netguard-ipk
-          path: sdk/bin/packages/*/net/netguard*.ipk
+          path: netguard_1.0.0-1_x86_64.ipk
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: netguard-native
+          path: target/x86_64-unknown-linux-musl/release/netguard
