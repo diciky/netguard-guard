@@ -22,8 +22,16 @@ jobs:
           SDK_DIR=$(ls -d openwrt-sdk-* 2>/dev/null | head -1)
           mkdir -p sdk
           mv $SDK_DIR/* sdk/
-          # Fix feeds symlink
-          ln -sf /home/runner/work/netguard-guard/netguard-guard/tools/feeds/feeds sdk/scripts/feeds 2>/dev/null || true
+
+          # Create feeds directory structure
+          mkdir -p sdk/tools/feeds
+          # Copy feeds from SDK's tools directory if it exists, otherwise create placeholder
+          if [ -d "sdk/tools/feeds" ]; then
+            ln -sf ../../tools/feeds sdk/scripts/feeds
+          else
+            touch sdk/tools/feeds/.placeholder
+            ln -sf ../../tools/feeds sdk/scripts/feeds
+          fi
 
       - name: Copy package files
         run: |
