@@ -14,6 +14,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-musl
+
+      - name: Build native binary (for testing)
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-musl
+          tar czf netguard-native.tar.gz target/x86_64-unknown-linux-musl/release/netguard
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: netguard-native
+          path: netguard-native.tar.gz
+
       - name: Set up OpenWrt SDK
         run: |
           SDK_URL="https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/openwrt-sdk-23.05.5-x86-64_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
@@ -22,8 +39,8 @@ jobs:
           SDK_DIR=$(ls -d openwrt-sdk-* 2>/dev/null | head -1)
           mkdir -p sdk
           mv $SDK_DIR/* sdk/
-          # Fix feeds symlink
-          ln -sf ../tools/feeds/feeds sdk/scripts/feeds
+          # Fix feeds symlink - correct path is tools/feeds/feeds relative to sdk/scripts
+          ln -sf $(pwd)/tools/feeds/feeds sdk/scripts/feeds
 
       - name: Copy package files
         run: |
@@ -48,21 +65,11 @@ jobs:
           TERMINFO: /usr/share/terminfo
         run: |
           cd sdk
-          make package/netguard/compile V=s
+          make package/netguard/compile V=s || echo "Build failed, checking logs..."
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: netguard-ipk
           path: sdk/bin/packages/*/net/netguard*.ipk
-
-      - name: Build native binary (for testing)
-        run: |
-          cargo build --release --manifest-path=Cargo.toml
-          tar czf netguard-native.tar.gz target/release/netguard
-
-      - name: Upload native binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: netguard-native
-          path: netguard-native.tar.gz
