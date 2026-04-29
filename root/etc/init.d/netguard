@@ -3,7 +3,6 @@
 
 START=95
 STOP=15
-USE_PROCD=0
 
 NETGUARD_BIN="/usr/bin/netguard"
 NETGUARD_CONF="/etc/config/netguard"
@@ -27,9 +26,8 @@ start() {
 
     # Start daemon
     mkdir -p /var/run
-    $NETGUARD_BIN &
-    echo $! > "$PID_FILE"
-    echo "NetGuard started (PID: $(cat $PID_FILE))"
+    $NETGUARD_BIN
+    echo "NetGuard started"
 }
 
 stop() {
@@ -37,10 +35,11 @@ stop() {
         kill $(cat "$PID_FILE") 2>/dev/null
         rm -f "$PID_FILE"
     fi
+    # Also kill by process name
+    pkill -f "/usr/bin/netguard" 2>/dev/null
 }
 
 reload() {
-    # Restart to reload config
     stop
     start
 }
@@ -49,11 +48,3 @@ restart() {
     stop
     start
 }
-
-case "$1" in
-    start) start ;;
-    stop) stop ;;
-    reload) reload ;;
-    restart) restart ;;
-    *) echo "Usage: $0 {start|stop|reload|restart}" ;;
-esac

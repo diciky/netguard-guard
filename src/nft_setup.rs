@@ -12,7 +12,7 @@ pub fn setup() -> Result<(), std::io::Error> {
     run_nft("add chain inet netguard output { type filter hook output priority 0; policy accept; }")?;
 
     // Add NFLog rule to output chain (group 100)
-    run_nft("add rule inet netguard output tcp counter nflog group 100")?;
+    run_nft("add rule inet netguard output tcp nflog group 100 counter")?;
 
     log::info!("nftables rules created successfully");
     Ok(())
